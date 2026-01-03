@@ -2,12 +2,12 @@
 
 import { useState, useCallback } from "react";
 import { CartItem, Product } from "@/types/pos";
-import { toast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 
 export const useCart = () => {
   const [items, setItems] = useState<CartItem[]>([]);
 
-  const addToCart = useCallback((product: Product) => {
+  const addToCart = useCallback((product: Product, quantity: number = 1) => {
     setItems((currentItems) => {
       const existingItem = currentItems.find(
         (item) => item.product.id === product.id
@@ -16,17 +16,16 @@ export const useCart = () => {
       if (existingItem) {
         return currentItems.map((item) =>
           item.product.id === product.id
-            ? { ...item, quantity: item.quantity + 1 }
+            ? { ...item, quantity: item.quantity + quantity }
             : item
         );
       }
 
-      return [...currentItems, { product, quantity: 1 }];
+      return [...currentItems, { product, quantity }];
     });
 
-    toast({
-      title: "Đã thêm vào giỏ hàng",
-      description: product.name,
+    toast.success("Đã thêm vào giỏ hàng", {
+      description: `${product.name} (${quantity} ${product.unit})`,
     });
   }, []);
 

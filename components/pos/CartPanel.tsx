@@ -88,9 +88,11 @@ export const CartPanel = ({
                     variant="outline"
                     size="icon"
                     className="h-8 w-8"
-                    onClick={() =>
-                      onUpdateQuantity(item.product.id, item.quantity - 1)
-                    }
+                    onClick={() => {
+                      const isKg = item.product.unit.toLowerCase() === "kg";
+                      const step = isKg ? 0.1 : 1;
+                      onUpdateQuantity(item.product.id, Number((item.quantity - step).toFixed(2)));
+                    }}
                   >
                     <Minus className="w-4 h-4" />
                   </Button>
@@ -100,19 +102,22 @@ export const CartPanel = ({
                     onChange={(e) =>
                       onUpdateQuantity(
                         item.product.id,
-                        parseInt(e.target.value) || 0
+                        parseFloat(e.target.value) || 0
                       )
                     }
                     className="w-16 h-8 text-center"
-                    min={1}
+                    min={0}
+                    step={item.product.unit.toLowerCase() === "kg" ? "0.01" : "1"}
                   />
                   <Button
                     variant="outline"
                     size="icon"
                     className="h-8 w-8"
-                    onClick={() =>
-                      onUpdateQuantity(item.product.id, item.quantity + 1)
-                    }
+                    onClick={() => {
+                      const isKg = item.product.unit.toLowerCase() === "kg";
+                      const step = isKg ? 0.1 : 1;
+                      onUpdateQuantity(item.product.id, Number((item.quantity + step).toFixed(2)));
+                    }}
                   >
                     <Plus className="w-4 h-4" />
                   </Button>

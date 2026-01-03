@@ -10,7 +10,7 @@ interface ReceiptProps {
 
 export const Receipt = ({ items, total, orderId }: ReceiptProps) => {
   return (
-    <div className="print-receipt">
+    <div id="receipt-to-print" className="print-receipt">
       <h1>LUA - Chợ Á Đông</h1>
       <div className="receipt-date">
         <div>Mã đơn: {orderId}</div>

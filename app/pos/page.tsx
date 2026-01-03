@@ -10,10 +10,12 @@ import { useCart } from "@/hooks/useCart";
 import { useBarcodeScanner } from "@/hooks/useBarcodeScanner";
 import { mockProducts } from "@/data/mockData";
 import { toast } from "@/hooks/use-toast";
+import { usePrint } from "@/hooks/usePrint";
 
 function POSContent() {
     const { items, addToCart, removeFromCart, updateQuantity, clearCart, total } = useCart();
     const [currentOrderId, setCurrentOrderId] = useState<string | null>(null);
+    const { printElement } = usePrint();
 
     // Barcode scanner hook
     useBarcodeScanner({
@@ -36,7 +38,10 @@ function POSContent() {
 
         // Trigger print
         setTimeout(() => {
-            window.print();
+            printElement("receipt-to-print");
+            // clearCart(); // moved after the timeout to be safer, though printElement copies content immediately
+            // But we want to clear purely for UI reasons.
+            // Actually, keep it here.
             clearCart();
             setCurrentOrderId(null);
         }, 100);

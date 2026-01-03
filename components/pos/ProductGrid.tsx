@@ -5,26 +5,49 @@ import { ProductCard } from "./ProductCard";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, removeAccents } from "@/lib/utils";
 import { categories } from "@/data/mockData";
+
+import { WeightInputModal } from "./WeightInputModal";
 
 interface ProductGridProps {
   products: Product[];
-  onAddToCart: (product: Product) => void;
+  onAddToCart: (product: Product, quantity?: number) => void;
 }
 
 export const ProductGrid = ({ products, onAddToCart }: ProductGridProps) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("Tất cả");
+  const [weightModalOpen, setWeightModalOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
   const filteredProducts = products.filter((product) => {
     const matchesSearch =
-      product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      removeAccents(product.name.toLowerCase()).includes(
+        removeAccents(searchQuery.toLowerCase())
+      ) ||
       product.barcode.includes(searchQuery);
     const matchesCategory =
       selectedCategory === "Tất cả" || product.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
+
+  const handleProductClick = (product: Product) => {
+    if (product.unit.toLowerCase() === "kg") {
+      setSelectedProduct(product);
+      setWeightModalOpen(true);
+    } else {
+      onAddToCart(product);
+    }
+  };
+
+  const handleWeightConfirm = (weight: number) => {
+    if (selectedProduct) {
+      onAddToCart(selectedProduct, weight);
+      setWeightModalOpen(false);
+      setSelectedProduct(null);
+    }
+  };
 
   return (
     <div className="flex flex-col h-full">
@@ -53,7 +76,7 @@ export const ProductGrid = ({ products, onAddToCart }: ProductGridProps) => {
             <ProductCard
               key={product.id}
               product={product}
-              onAdd={onAddToCart}
+              onAdd={handleProductClick}
             />
           ))}
         </div>
@@ -80,6 +103,12 @@ export const ProductGrid = ({ products, onAddToCart }: ProductGridProps) => {
           />
         </div>
       </div>
+      <WeightInputModal
+        product={selectedProduct}
+        isOpen={weightModalOpen}
+        onClose={() => setWeightModalOpen(false)}
+        onConfirm={handleWeightConfirm}
+      />
     </div>
   );
 };
