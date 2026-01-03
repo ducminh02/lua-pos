@@ -1,12 +1,12 @@
 export const formatCurrency = (amount: number): string => {
-  return new Intl.NumberFormat("vi-VN", {
+  return new Intl.NumberFormat("de-DE", {
     style: "currency",
-    currency: "VND",
+    currency: "EUR",
   }).format(amount);
 };
 
 export const formatDate = (dateString: string): string => {
-  return new Intl.DateTimeFormat("vi-VN", {
+  return new Intl.DateTimeFormat("de-DE", {
     day: "2-digit",
     month: "2-digit",
     year: "numeric",
@@ -16,7 +16,7 @@ export const formatDate = (dateString: string): string => {
 };
 
 export const formatDateShort = (dateString: string): string => {
-  return new Intl.DateTimeFormat("vi-VN", {
+  return new Intl.DateTimeFormat("de-DE", {
     day: "2-digit",
     month: "2-digit",
     year: "numeric",
